@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier mes préférences{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3>Modifier mes préférences</h3>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form) }}
+                    
+                    <div class="mb-3">
+                        {{ form_row(form.city, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_row(form.newsKeywords, {'attr': {'class': 'form-control'}}) }}
+                        <small class="text-muted">Utilisez des virgules pour séparer les mots (ex: symfony, basket, bitcoin)</small>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        {{ form_row(form.save) }}
+                    </div>
+                    
+                    {{ form_end(form) }}
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{{ path('app_dashboard') }}" class="text-decoration-none">Retour au Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

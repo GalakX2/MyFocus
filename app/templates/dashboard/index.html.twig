@@ -1,0 +1,232 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Dashboard
+{% endblock %}
+
+{% block body %}
+	<div
+		class="container">
+		<!-- En-tête de bienvenue -->
+		<div class="row mb-4 align-items-center">
+			<div class="col">
+				<h1 class="h3 mb-0 text-gray-800">Bonjour,
+					{{ user.email|split('@')[0]|capitalize }}
+					👋</h1>
+				<p class="text-muted small">Voici votre résumé personnel pour aujourd'hui.</p>
+			</div>
+			<div class="col-auto">
+				<a
+					href="{{ path('app_profile') }}" class="btn btn-white shadow-sm d-flex align-items-center py-2 px-3 rounded-pill text-decoration-none transition-hover" title="Modifier ma ville">
+
+					<!-- Icône plus raisonnable (fs-4 au lieu de fs-2) -->
+					<span class="fs-4 me-2">📍</span>
+
+					<div class="text-start lh-1">
+						<span class="d-block text-muted text-uppercase fw-bold" style="font-size: 0.65rem;">Ma ville</span>
+						<!-- Texte de ville plus compact (fs-5 au lieu de fs-4) -->
+						<span class="fs-5 fw-bold text-dark">{{ city }}</span>
+					</div>
+
+					<!-- Petit crayon discret -->
+					<i class="bi bi-pencil-square ms-2 text-muted opacity-50 small"></i>
+				</a>
+			</div>
+		</div>
+
+		<!-- Messages Flash (Succès/Erreur) -->
+		{% for label, messages in app.flashes %}
+			{% for message in messages %}
+				<div class="alert alert-{{ label }} alert-dismissible fade show shadow-sm border-0" role="alert">
+					{{ message }}
+					<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+				</div>
+			{% endfor %}
+		{% endfor %}
+
+		<div
+			class="row g-4">
+			<!-- BLOC METEO -->
+			<div class="col-md-4">
+				<div class="card h-100">
+					<div class="card-body">
+						<div class="d-flex justify-content-between align-items-center mb-3">
+							<h5 class="card-title text-primary mb-0">
+								<i class="bi bi-cloud-sun me-2"></i>Météo</h5>
+							<a href="{{ path('app_profile') }}" class="text-muted">
+								<i class="bi bi-gear"></i>
+							</a>
+						</div>
+
+						{% if weather.error is defined %}
+							<div class="alert alert-light text-center">
+								<small>{{ weather.error }}</small>
+							</div>
+						{% else %}
+							<div class="text-center py-3">
+								{% if weather.icon is defined %}
+									<img src="https://openweathermap.org/img/wn/{{ weather.icon }}@2x.png" alt="Icone météo" width="80">
+								{% endif %}
+								<h2 class="display-4 fw-bold mb-0">{{ weather.temperature }}°</h2>
+								<p class="text-muted text-capitalize mb-0">{{ weather.description }}</p>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+
+			<!-- BLOC NEWS -->
+			<div class="col-md-4">
+				<div class="card h-100">
+					<div class="card-body d-flex flex-column">
+						<div class="d-flex justify-content-between align-items-center mb-3">
+							<h5 class="card-title text-danger mb-0">
+								<i class="bi bi-newspaper me-2"></i>News</h5>
+							<a href="{{ path('app_profile') }}" class="text-muted">
+								<i class="bi bi-gear"></i>
+							</a>
+						</div>
+
+						<div class="flex-grow-1 overflow-auto" style="max-height: 300px;">
+							{% if news is empty %}
+								<div class="text-center text-muted mt-4">
+									<i class="bi bi-journal-x fs-1"></i>
+									<p class="mt-2">Aucune news.</p>
+								</div>
+							{% else %}
+								<ul class="list-group list-group-flush">
+									{% for article in news %}
+										<li class="list-group-item border-0 px-0 py-3">
+											<a href="{{ article.url }}" target="_blank" class="text-decoration-none text-dark fw-bold d-block mb-1">
+												{{ article.title }}
+											</a>
+											<div class="d-flex justify-content-between">
+												<small class="text-muted fst-italic">{{ article.source.name }}</small>
+												<small class="text-muted">
+													<i class="bi bi-box-arrow-up-right"></i>
+												</small>
+											</div>
+										</li>
+									{% endfor %}
+								</ul>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- BLOC FINANCE -->
+			<div class="col-md-4">
+				<div class="card h-100 bg-primary text-white bg-gradient shadow-sm">
+					<div class="card-body">
+						<h5 class="card-title text-white mb-4 border-bottom border-white pb-2" style="--bs-border-opacity: .3;">
+							<i class="bi bi-graph-up-arrow me-2"></i>Finance
+						</h5>
+
+						<div
+							class="d-flex flex-column gap-4 justify-content-center h-75">
+
+							<!-- Section Bitcoin -->
+							<div class="d-flex align-items-center justify-content-between">
+								<div class="d-flex align-items-center">
+									<i class="bi bi-currency-bitcoin fs-1 me-2 opacity-75"></i>
+									<div>
+										<h6 class="mb-0 opacity-75">Bitcoin (BTC)</h6>
+										{% if bitcoinPrice %}
+											<span class="fs-4 fw-bold">{{ bitcoinPrice|number_format(0, ',', ' ') }}
+												€</span>
+										{% else %}
+											<span class="small text-warning">Indisponible</span>
+										{% endif %}
+									</div>
+								</div>
+							</div>
+
+							<!-- Section USD -->
+							<div class="d-flex align-items-center justify-content-between">
+								<div class="d-flex align-items-center">
+									<i class="bi bi-currency-dollar fs-1 me-2 opacity-75"></i>
+									<div>
+										<h6 class="mb-0 opacity-75">Taux EUR
+											<i class="bi bi-arrow-right-short"></i>
+											USD</h6>
+										{% if usdRate %}
+											<span class="fs-4 fw-bold">{{ usdRate }}
+												$</span>
+										{% else %}
+											<span class="small text-warning">Indisponible</span>
+										{% endif %}
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+					<div class="card-footer bg-transparent border-0 text-white-50 small text-end">
+						Données temps réel
+					</div>
+				</div>
+			</div>
+			<!-- NOUVELLE LIGNE POUR LES OBJECTIFS -->
+			<div class="row mt-4">
+				<div class="col-12">
+					<div class="card shadow-sm h-100">
+						<div class="card-header bg-white border-0 py-3 d-flex align-items-center">
+							<h5 class="mb-0 text-dark fw-bold">
+								<i class="bi bi-check2-circle me-2 text-success"></i>Mes Objectifs du jour</h5>
+						</div>
+						<div
+							class="card-body p-0">
+
+							<!-- LISTE DES OBJECTIFS -->
+							<ul class="list-group list-group-flush">
+								{% for goal in goals %}
+									<li class="list-group-item d-flex justify-content-between align-items-center py-3 {{ goal.isDone ? 'bg-light' : '' }}">
+										<div
+											class="d-flex align-items-center">
+											<!-- BOUTON COCHER (Lien qui agit comme une checkbox) -->
+											<a href="{{ path('app_goal_toggle', {'id': goal.id}) }}" class="text-decoration-none me-3">
+												{% if goal.isDone %}
+													<i class="bi bi-check-circle-fill fs-4 text-success"></i>
+												{% else %}
+													<i class="bi bi-circle fs-4 text-muted hover-primary"></i>
+												{% endif %}
+											</a>
+
+											<!-- TITRE (Barré si fait) -->
+											<span class="{{ goal.isDone ? 'text-decoration-line-through text-muted' : 'fw-bold' }}">
+												{{ goal.title }}
+											</span>
+										</div>
+
+										<!-- BOUTON SUPPRIMER -->
+										<a href="{{ path('app_goal_delete', {'id': goal.id}) }}" class="btn btn-link text-danger p-0" onclick="return confirm('Supprimer cet objectif ?')">
+											<i class="bi bi-trash3"></i>
+										</a>
+									</li>
+								{% else %}
+									<li class="list-group-item text-center py-4 text-muted">
+										☕ Vous n'avez pas encore d'objectif pour aujourd'hui.
+									</li>
+								{% endfor %}
+							</ul>
+
+							<!-- FORMULAIRE D'AJOUT -->
+							<div class="p-3 bg-light border-top">
+								{{ form_start(goalForm, {'attr': {'class': 'd-flex gap-2'}}) }}
+								<div class="flex-grow-1">
+									{{ form_widget(goalForm.title) }}
+								</div>
+								<button type="submit" class="btn btn-primary">
+									<i class="bi bi-plus-lg"></i>
+									Ajouter
+								</button>
+								{{ form_end(goalForm) }}
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

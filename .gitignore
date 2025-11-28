@@ -1,0 +1,17 @@
+# .gitignore
+
+# Symfony
+/.env.local
+/.env.*.local
+/var/
+/vendor/
+/public/bundles/
+/public/build/
+
+# Docker
+docker-compose.override.yml
+
+# IDE
+.idea/
+.vscode/
+*.swp
