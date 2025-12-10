@@ -23,7 +23,7 @@ MyFocus est un tableau de bord personnel développé avec **Symfony 7** et **Doc
 1. **Cloner le projet**
 
 ```bash
-   git clone git@github.com:VOTRE_NOM_UTILISATEUR/myfocus.git
+   git clone git@github.com:GalakX2/myfocus.git
    cd myfocus
 ```
 
