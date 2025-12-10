@@ -31,9 +31,8 @@ MyFocus est un tableau de bord personnel développé avec **Symfony 7** et **Doc
 Copiez le fichier .env en .env.local et ajoutez vos clés API :
 
 ```bash
-cp .env .env.
+cp .env .env.local
 ```
-Modifiez .env.local avec vos clés (OPENWEATHER_API_KEY, NEWS_API_KEY).
 
 3. **Lancer les conteneurs Docker**
 
